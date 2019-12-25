@@ -1,0 +1,14 @@
+# Environment Configuration
+.env
+
+# System files
+.DS_Store
+.trashes
+
+# Dev files
+.idea
+*result.cache
+
+# 3rd Party Packages
+vendor
+node-modules
