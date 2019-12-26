@@ -9,13 +9,24 @@
 
 namespace Webforms\Tests\Unit;
 
+use Dotenv\Dotenv;
 use Webforms\Webform;
 use PHPUnit\Framework\TestCase;
 
 class WebformTest extends TestCase
 {
-    public function setUp(): void
+    /**
+     * Set up before running tests.
+     *
+     * @return void
+     * @since  ver 1.0.0
+     *
+     * @author Caspar Green
+     */
+    public static function setUpBeforeClass(): void
     {
+        $dotenv = Dotenv::createImmutable(dirname(dirname(__DIR__)));
+        $dotenv->load();
     }
 
     /**
@@ -59,7 +70,7 @@ class WebformTest extends TestCase
     public function testSendFailsWhenFormSenderNameNotProvided(): void
     {
         $_POST = [
-            'from' => 'john.smith@example.com',
+            'from'    => 'john.smith@example.com',
             'message' => 'Some message text.'
         ];
 
@@ -72,8 +83,8 @@ class WebformTest extends TestCase
         );
 
         $_POST = [
-            'from' => 'john.smith@example.com',
-            'name' => '',
+            'from'    => 'john.smith@example.com',
+            'name'    => '',
             'message' => 'Some message text.'
         ];
 
@@ -121,6 +132,23 @@ class WebformTest extends TestCase
             'Send Failed: Message not provided.',
             $mailerMessageEmpty->send(),
             'Message check (message empty) error.'
+        );
+    }
+
+    public function testTendSucceedsWhenNoErrors(): void
+    {
+        $_POST = [
+            'from'    => 'john.smith@example.com',
+            'name'    => 'John',
+            'message' => 'My message to you.'
+        ];
+
+        $mailer = new Webform();
+
+        $this->assertEquals(
+            'Send Succeeded.',
+            $mailer->send(),
+            'Send failed without cause.'
         );
     }
 }
