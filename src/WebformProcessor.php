@@ -10,7 +10,7 @@
 
 namespace Webforms;
 
-class Webform
+class WebformProcessor
 {
     const SUBJECT = 'Website Form Submission';
 
@@ -54,7 +54,7 @@ class Webform
         $this->message    = $this->getMessage();
     }
 
-    public function send(): string
+    public function process(): string
     {
         if (empty($this->replyTo)) {
             return 'Send Failed: Sender email not provided.';

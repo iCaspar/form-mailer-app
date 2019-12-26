@@ -17,9 +17,9 @@ function run(): string
     $dotenv = Dotenv::createImmutable(__DIR__);
     $dotenv->load();
 
-    $webform = new Webform();
+    $webform = new WebformProcessor();
 
-    return $webform->send();
+    return $webform->process();
 }
 
 echo run();

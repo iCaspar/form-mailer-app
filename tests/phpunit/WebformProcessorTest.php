@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for Webform Class.
+ * Tests for WebformProcessor Class.
  *
  * @package Webforms\Tests\Unit
  * @author  Caspar Green
@@ -10,10 +10,10 @@
 namespace Webforms\Tests\Unit;
 
 use Dotenv\Dotenv;
-use Webforms\Webform;
+use Webforms\WebformProcessor;
 use PHPUnit\Framework\TestCase;
 
-class WebformTest extends TestCase
+class WebformProcessorTest extends TestCase
 {
     /**
      * Set up before running tests.
@@ -44,11 +44,11 @@ class WebformTest extends TestCase
             'message' => 'Some message text.'
         ];
 
-        $mailerSenderNotSet = new Webform();
+        $mailerSenderNotSet = new WebformProcessor();
 
         $this->assertEquals(
             'Send Failed: Sender email not provided.',
-            $mailerSenderNotSet->send(),
+            $mailerSenderNotSet->process(),
             'Sender email check (sender not set) error.'
         );
 
@@ -58,11 +58,11 @@ class WebformTest extends TestCase
             'message' => 'Some message text.'
         ];
 
-        $mailerSenderEmpty = new Webform();
+        $mailerSenderEmpty = new WebformProcessor();
 
         $this->assertEquals(
             'Send Failed: Sender email not provided.',
-            $mailerSenderEmpty->send(),
+            $mailerSenderEmpty->process(),
             'Sender email check (sender empty) error.'
         );
     }
@@ -74,11 +74,11 @@ class WebformTest extends TestCase
             'message' => 'Some message text.'
         ];
 
-        $mailerSenderNotSet = new Webform();
+        $mailerSenderNotSet = new WebformProcessor();
 
         $this->assertEquals(
             'Send Failed: Sender name not provided.',
-            $mailerSenderNotSet->send(),
+            $mailerSenderNotSet->process(),
             'Sender name check (name not set) error.'
         );
 
@@ -88,11 +88,11 @@ class WebformTest extends TestCase
             'message' => 'Some message text.'
         ];
 
-        $mailerSenderEmpty = new Webform();
+        $mailerSenderEmpty = new WebformProcessor();
 
         $this->assertEquals(
             'Send Failed: Sender name not provided.',
-            $mailerSenderEmpty->send(),
+            $mailerSenderEmpty->process(),
             'Sender name check (name empty) error.'
         );
     }
@@ -112,11 +112,11 @@ class WebformTest extends TestCase
             'name' => 'John Smith'
         ];
 
-        $mailerMessageNotSet = new Webform();
+        $mailerMessageNotSet = new WebformProcessor();
 
         $this->assertEquals(
             'Send Failed: Message not provided.',
-            $mailerMessageNotSet->send(),
+            $mailerMessageNotSet->process(),
             'Message check (message not set) error.'
         );
 
@@ -126,11 +126,11 @@ class WebformTest extends TestCase
             'message' => ''
         ];
 
-        $mailerMessageEmpty = new Webform();
+        $mailerMessageEmpty = new WebformProcessor();
 
         $this->assertEquals(
             'Send Failed: Message not provided.',
-            $mailerMessageEmpty->send(),
+            $mailerMessageEmpty->process(),
             'Message check (message empty) error.'
         );
     }
@@ -143,11 +143,11 @@ class WebformTest extends TestCase
             'message' => 'My message to you.'
         ];
 
-        $mailer = new Webform();
+        $mailer = new WebformProcessor();
 
         $this->assertEquals(
             'Send Succeeded.',
-            $mailer->send(),
+            $mailer->process(),
             'Send failed without cause.'
         );
     }
