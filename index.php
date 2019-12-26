@@ -8,7 +8,7 @@
 <p>More info on <a href="https://github.com/iCaspar/form-mailer-app">Github</a>.</p>
 <p>Use the form below for testing:</p>
 
-<form method="post" action="./run.php">
+<form method="post" action="./init.php">
     <label for="name">Name: </label><input type="text" name="name" id="name" size="30"><br>
     <label for="from">Email: </label><input type="email" name="from" id="from" size="30"><br>
     <label for="message">Message: </label><br>

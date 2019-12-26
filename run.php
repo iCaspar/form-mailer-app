@@ -12,8 +12,6 @@ use Dotenv\Dotenv;
 
 function run(): string
 {
-    require_once './vendor/autoload.php';
-
     $dotenv = Dotenv::createImmutable(__DIR__);
     $dotenv->load();
 
@@ -21,5 +19,3 @@ function run(): string
 
     return $webform->process();
 }
-
-echo run();
