@@ -85,7 +85,7 @@ class WebformProcessor
 
     private function getReplyToAddress(): string
     {
-        if ( ! isset($this->postData['from']) || empty($this->postData['from'])) {
+        if (! isset($this->postData['from']) || empty($this->postData['from'])) {
             return '';
         }
 
@@ -94,7 +94,7 @@ class WebformProcessor
 
     private function getMessage(): string
     {
-        if ( ! isset($this->postData['message']) || empty($this->postData['message'])) {
+        if (! isset($this->postData['message']) || empty($this->postData['message'])) {
             return '';
         }
 
@@ -103,7 +103,7 @@ class WebformProcessor
 
     private function getSenderName(): string
     {
-        if ( ! isset($this->postData['name']) || empty($this->postData['name'])) {
+        if (! isset($this->postData['name']) || empty($this->postData['name'])) {
             return '';
         }
 
