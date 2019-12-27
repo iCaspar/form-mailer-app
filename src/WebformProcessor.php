@@ -3,7 +3,6 @@
  * Webform Main Class.
  *
  * @package Webforms
- * @version 1.0.0-Alpha1
  * @author  Caspar Green
  * @since   ver 1.0.0
  */
