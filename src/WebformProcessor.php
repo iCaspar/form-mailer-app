@@ -10,9 +10,17 @@
 
 namespace Webforms;
 
+use Swift_Mailer;
+use Swift_Message;
+
 class WebformProcessor
 {
     const SUBJECT = 'Website Form Submission';
+
+    /**
+     * @var Swift_Mailer
+     */
+    private $mailer;
 
     /**
      * @var array Data from $_POST.
@@ -44,8 +52,14 @@ class WebformProcessor
      */
     private $senderName;
 
-    public function __construct()
+    /**
+     * WebformProcessor constructor.
+     *
+     * @param Swift_Mailer $mailer
+     */
+    public function __construct(Swift_Mailer $mailer)
     {
+        $this->mailer     = $mailer;
         $this->postData   = $_POST;
         $this->to         = getenv('RECIPIENT');
         $this->from       = getenv('USER_EMAIL');
@@ -54,6 +68,14 @@ class WebformProcessor
         $this->message    = $this->getMessage();
     }
 
+    /**
+     * Process a form submission.
+     *
+     * @return string
+     * @since  ver 1.0.0
+     *
+     * @author Caspar Green
+     */
     public function process(): string
     {
         if (empty($this->replyTo)) {
@@ -68,21 +90,31 @@ class WebformProcessor
             return 'Send Failed: Message not provided.';
         }
 
-        $message = $this->prepareMessage();
+        $message = $this->prepareEmail();
 
-        $success = mail(
-            $this->to,
-            self::SUBJECT,
-            $this->message,
-            [
-                'from'     => $this->from,
-                'reply-to' => $this->replyTo
-            ]
-        );
+//        $success = mail(
+//            $this->to,
+//            self::SUBJECT,
+//            $this->message,
+//            [
+//                'from'     => $this->from,
+//                'reply-to' => $this->replyTo
+//            ]
+//        );
 
-        return 'Send Succeeded.';
+        $result = $this->mailer->send($message);
+
+        return 'Send Succeeded: ' . $result;
     }
 
+    /**
+     * Get a Reply-to address.
+     *
+     * @return string
+     * @since  ver 1.0.0
+     *
+     * @author Caspar Green
+     */
     private function getReplyToAddress(): string
     {
         if (! isset($this->postData['from']) || empty($this->postData['from'])) {
@@ -92,6 +124,14 @@ class WebformProcessor
         return filter_var($this->postData['from'], FILTER_SANITIZE_EMAIL);
     }
 
+    /**
+     * Get the submitted message.
+     *
+     * @return string
+     * @since  ver 1.0.0
+     *
+     * @author Caspar Green
+     */
     private function getMessage(): string
     {
         if (! isset($this->postData['message']) || empty($this->postData['message'])) {
@@ -101,6 +141,14 @@ class WebformProcessor
         return filter_var($this->postData['message'], FILTER_SANITIZE_STRING);
     }
 
+    /**
+     * Get the form submitter's name.
+     *
+     * @return string
+     * @since  ver 1.0.0
+     *
+     * @author Caspar Green
+     */
     private function getSenderName(): string
     {
         if (! isset($this->postData['name']) || empty($this->postData['name'])) {
@@ -110,11 +158,23 @@ class WebformProcessor
         return filter_var($this->postData['name'], FILTER_SANITIZE_STRING);
     }
 
-    private function prepareMessage(): string
+    /**
+     * Prepare the email for sending.
+     *
+     * @return string
+     * @since  ver 1.0.0
+     *
+     * @author Caspar Green
+     */
+    private function prepareEmail(): Swift_Message
     {
-        $message = $this->senderName . " wrote:\r\n";
-        $message .= $this->message;
+        $body = $this->senderName . " wrote:\r\n";
+        $body .= $this->message;
 
-        return $message;
+        return (new Swift_Message(self::SUBJECT))
+            ->setFrom($this->from)
+            ->setTo($this->to)
+            ->setReplyTo($this->replyTo)
+            ->setBody($body);
     }
 }
