@@ -91,17 +91,6 @@ class WebformProcessor
         }
 
         $message = $this->prepareEmail();
-
-//        $success = mail(
-//            $this->to,
-//            self::SUBJECT,
-//            $this->message,
-//            [
-//                'from'     => $this->from,
-//                'reply-to' => $this->replyTo
-//            ]
-//        );
-
         $result = $this->mailer->send($message);
 
         return 'Send Succeeded: ' . $result;

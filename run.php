@@ -17,7 +17,7 @@ function run(): string
     $dotenv = Dotenv::createImmutable(__DIR__);
     $dotenv->load();
 
-    $transport = (new Swift_SmtpTransport(getenv('SERVER'), getenv('PORT')))
+    $transport = (new Swift_SmtpTransport(getenv('SERVER'), getenv('PORT'), 'ssl'))
         ->setUsername(getenv('USER_ID'))
         ->setPassword(getenv('PASSWD'));
 
