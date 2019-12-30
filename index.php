@@ -38,7 +38,7 @@
                 if (responseText.includes('Succeeded')) {
                     responseText = 'Your message has been sent! Thank you!'
                 }
-                
+
                 const responsePara = document.createElement('p');
                 const responseTextNode = document.createTextNode(responseText);
                 responsePara.appendChild(responseTextNode);

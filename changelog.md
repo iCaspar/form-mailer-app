@@ -1,5 +1,11 @@
 # Changelog
 
+### Beta1
+(First deployed version on caspar.green)
+
+* Add check for form key before processing.
+* Add CORS compatibility.
+
 ### Alpha2
 
 * Add SwiftMailer package and refactor to run over SMTP with SSL.
