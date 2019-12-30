@@ -17,6 +17,12 @@ function run(): string
     $dotenv = Dotenv::createImmutable(__DIR__);
     $dotenv->load();
 
+    $allowedOrigin = getenv('ALLOW_ORIGIN');
+    $accessKeyName = getenv('FORM_KEYNAME');
+
+    header("Access-Control-Allow-Origin: {$allowedOrigin}");
+    header("Access-Control-Allow-Headers: {$accessKeyName}");
+
     $transport = (new Swift_SmtpTransport(getenv('SERVER'), getenv('PORT'), 'ssl'))
         ->setUsername(getenv('USER_ID'))
         ->setPassword(getenv('PASSWD'));

@@ -52,6 +52,16 @@ class WebformProcessor
     private $senderName;
 
     /**
+     * @var string The form access keyname.
+     */
+    private $keyName;
+
+    /**
+     * @var array|false|string The form access key value.
+     */
+    private $key;
+
+    /**
      * WebformProcessor constructor.
      *
      * @param Swift_Mailer $mailer
@@ -65,6 +75,8 @@ class WebformProcessor
         $this->senderName = $this->getSenderName();
         $this->replyTo    = $this->getReplyToAddress();
         $this->message    = $this->getMessage();
+        $this->keyName    = $this->getFormKeyHeaderName();
+        $this->key        = getenv('FORM_KEY');
     }
 
     /**
@@ -77,6 +89,10 @@ class WebformProcessor
      */
     public function process(): string
     {
+        if ($_SERVER[$this->keyName] !== $this->key) {
+            return '';
+        }
+
         if (empty($this->replyTo)) {
             return 'Send Failed: Sender email not provided.';
         }
@@ -90,7 +106,7 @@ class WebformProcessor
         }
 
         $message = $this->prepareEmail();
-        $result = $this->mailer->send($message);
+        $result  = $this->mailer->send($message);
 
         return 'Send Succeeded: ' . $result;
     }
@@ -144,6 +160,19 @@ class WebformProcessor
         }
 
         return filter_var($this->postData['name'], FILTER_SANITIZE_STRING);
+    }
+
+    /**
+     * Get the form key header name.
+     *
+     * @return string
+     * @since  ver 1.0.0
+     *
+     * @author Caspar Green
+     */
+    private function getFormKeyHeaderName(): string
+    {
+        return 'HTTP_' . str_replace('-', '_', strtoupper(getenv('FORM_KEYNAME')));
     }
 
     /**

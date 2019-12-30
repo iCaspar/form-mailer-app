@@ -32,7 +32,7 @@ class WebformProcessorTest extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
-        $dotenv = Dotenv::createImmutable(dirname(dirname(__DIR__)));
+        $dotenv = Dotenv::createImmutable(dirname(__DIR__));
         $dotenv->load();
     }
 
@@ -47,6 +47,29 @@ class WebformProcessorTest extends TestCase
     public function setUp(): void
     {
         $this->mailer = Mockery::mock('Swift_Mailer');
+
+        $_SERVER['HTTP_X_ICASPAR_KEY'] = getenv('FORM_KEY');
+
+        $_POST = [
+            'from'    => 'jsmith@example.com',
+            'name'    => 'John Smith',
+            'message' => 'Some message text.'
+        ];
+    }
+
+    public function testProcessExitsSilentlyWhenAccessKeyNotProvided(): void
+    {
+        unset($_SERVER['HTTP_X_ICASPAR_KEY']);
+
+        $processor = new WebformProcessor($this->mailer);
+
+        $this->mailer->shouldNotReceive('send');
+
+        $this->assertEquals(
+            '',
+            $processor->process(),
+            'Process not terminated when no key provided.'
+        );
     }
 
     /**
@@ -59,10 +82,7 @@ class WebformProcessorTest extends TestCase
      */
     public function testProcessFailsWhenFormSenderAddressNotProvided(): void
     {
-        $_POST = [
-            'name'    => 'John Smith',
-            'message' => 'Some message text.'
-        ];
+        unset($_POST['from']);
 
         $processor = new WebformProcessor($this->mailer);
 
@@ -74,11 +94,7 @@ class WebformProcessorTest extends TestCase
             'Sender email check (sender not set) error.'
         );
 
-        $_POST = [
-            'from'    => '',
-            'name'    => 'John Smith',
-            'message' => 'Some message text.'
-        ];
+        $_POST['from'] = '';
 
         $processor = new WebformProcessor($this->mailer);
 
@@ -101,10 +117,7 @@ class WebformProcessorTest extends TestCase
      */
     public function testProcessFailsWhenFormSenderNameNotProvided(): void
     {
-        $_POST = [
-            'from'    => 'john.smith@example.com',
-            'message' => 'Some message text.'
-        ];
+        unset($_POST['name']);
 
         $processor = new WebformProcessor($this->mailer);
 
@@ -116,11 +129,7 @@ class WebformProcessorTest extends TestCase
             'Sender name check (name not set) error.'
         );
 
-        $_POST = [
-            'from'    => 'john.smith@example.com',
-            'name'    => '',
-            'message' => 'Some message text.'
-        ];
+        $_POST['name'] = '';
 
         $processor = new WebformProcessor($this->mailer);
 
@@ -143,10 +152,7 @@ class WebformProcessorTest extends TestCase
      */
     public function testProcessFailsWhenMessageNotProvided(): void
     {
-        $_POST = [
-            'from' => 'john.smith@example.com',
-            'name' => 'John Smith'
-        ];
+        unset($_POST['message']);
 
         $processor = new WebformProcessor($this->mailer);
 
@@ -158,11 +164,7 @@ class WebformProcessorTest extends TestCase
             'Message check (message not set) error.'
         );
 
-        $_POST = [
-            'from'    => 'john.smith@example.com',
-            'name'    => 'John Smith',
-            'message' => ''
-        ];
+        $_POST['message'] = '';
 
         $processor = new WebformProcessor($this->mailer);
 
@@ -185,12 +187,6 @@ class WebformProcessorTest extends TestCase
      */
     public function testProcessSucceedsWhenNoErrors(): void
     {
-        $_POST = [
-            'from'    => 'john.smith@example.com',
-            'name'    => 'John',
-            'message' => 'My message to you.'
-        ];
-
         $processor = new WebformProcessor($this->mailer);
 
         $this->mailer
